@@ -1,0 +1,54 @@
+{% extends "base.html"%}
+{% block content %}
+<div class="mb-3">
+    <legend> Edit Driver Profile</legend>
+</div>
+<form action="{% url 'ride_sharing:driver_profile'%}" method="post">
+    {% csrf_token %}
+    {% if current_data %}
+    <div class="mb-3">
+      <label for="your_name" class="form-label">Full Name</label>
+      <input type="text" class="form-control" id="your_name" name="your_name" value="{{current_data.your_name}}" required>
+    </div>
+    <div class="mb-3">
+      <label for="vehicle_type" class="form-label">Your Vehicle Type</label>
+      <input type="text" class="form-control" id="vehicle_type" name="vehicle_type" value="{{current_data.vehicle_type}}" required>
+    </div>
+    <div class="mb-3">
+        <label for="license_plate_num" class="form-label">Your License Plate Number</label>
+        <input type="text" class="form-control" id="license_plate_num" name="license_plate_num" value="{{current_data.license_plate_num}}" required>
+    </div>
+    <div class="mb-3">
+    <label for="max_passenger_num" class="form-label">Max Passenger Number</label>
+    <input type="text" class="form-control" id="max_passenger_num" name="max_passenger_num" value="{{current_data.max_passenger_num}}" required>
+    </div>
+    <div class="mb-3">
+        <label for="special_vehicle_info" class="form-label">Special Vehicle Information</label>
+        <input type="text" class="form-control" id="special_vehicle_info" name="special_vehicle_info" value="{{current_data.special_vehicle_info}}">
+    </div>
+    {% else %}
+    <div class="mb-3">
+      <label for="your_name" class="form-label">Full Name</label>
+      <input type="text" class="form-control" id="your_name" name="your_name" value="{{driver_info.name}}" required>
+    </div>
+    <div class="mb-3">
+      <label for="vehicle_type" class="form-label">Your Vehicle Type</label>
+      <input type="text" class="form-control" id="vehicle_type" name="vehicle_type" value="{{driver_info.vehicle_type}}" required>
+    </div>
+    <div class="mb-3">
+        <label for="license_plate_num" class="form-label">Your License Plate Number</label>
+        <input type="text" class="form-control" id="license_plate_num" name="license_plate_num" value="{{driver_info.license_plate_num}}" required>
+    </div>
+    <div class="mb-3">
+    <label for="max_passenger_num" class="form-label">Max Passenger Number</label>
+    <input type="text" class="form-control" id="max_passenger_num" name="max_passenger_num" value="{{driver_info.max_passenger_num}}" required>
+    </div>
+    <div class="mb-3">
+        <label for="special_vehicle_info" class="form-label">Special Vehicle Information</label>
+        <input type="text" class="form-control" id="special_vehicle_info" name="special_vehicle_info" value="{{driver_info.special_vehicle_info}}">
+    </div>
+    {% endif %}
+    <button type="submit" name="confirm" value="OK" class="btn btn-primary">Save Edits</button>
+    <button type="submit" value="cancle" class="btn btn-outline-secondary">Cancle Edits</button>
+  </form>
+{% endblock content %}

@@ -1,0 +1,80 @@
+{% extends "base.html"%}
+{% block content %}
+<div class="mb-3">
+    <legend> Place a Ride Request </legend>
+</div>
+<div class="p-2">
+<form action="{% url 'ride_sharing:view_request_detail'%}" method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="destination" class="form-label">Destination Address</label>
+      {% if current_data %}
+        <input type="text" class="form-control" id="destination" name="destination" value="{{current_data.destination}}" required>
+      {% else %}
+        <input type="text" class="form-control" id="destination" name="destination" value="{{request_info.destination}}" required>
+      {% endif %}
+    </div>
+    <div class="mb-3">
+      <label for="expected_arrival_time" class="form-label">expected_arrival_time</label>
+        <input type="datetime-local" class="form-control" id="expected_arrival_time" name="expected_arrival_time" value="{{formatted_time}}" required>
+    </div>
+    <div class="mb-3">
+        <label for="num_passengers" class="form-label">num_passengers</label>
+        {% if current_data %}
+          <input type="number" class="form-control" id="num_passengers" name="num_passengers" value="{{current_data.num_passengers}}" required>
+        {% else %}
+          <input type="number" class="form-control" id="num_passengers" name="num_passengers" value="{{request_info.num_passengers}}" required>
+        {% endif %}
+    </div>
+    {% if current_data%}
+    {% if current_data.can_share%}
+      <div class="mb-3">
+          <input type="checkbox" id="can_share" name="can_share" checked>
+          <label for="can_share" class="form-label"> I'm open to having other passengers join me on this ride</label>
+      </div>
+    {% else %}
+      <div class="mb-3">
+        <input type="checkbox" id="can_share" name="can_share">
+        <label for="can_share" class="form-label"> I'm open to having other passengers join me on this ride</label>
+      </div>
+    {% endif %}
+    {% else %}
+      {% if request_info.can_share%}
+        <div class="mb-3">
+            <input type="checkbox" id="can_share" name="can_share" checked>
+            <label for="can_share" class="form-label"> I'm open to having other passengers join me on this ride</label>
+        </div>
+      {% else %}
+        <div class="mb-3">
+          <input type="checkbox" id="can_share" name="can_share">
+          <label for="can_share" class="form-label"> I'm open to having other passengers join me on this ride</label>
+        </div>
+      {% endif %}
+    {% endif %}
+    <div class="mb-3">
+    <label for="vehicle_type" class="form-label">vehicle_type (Optional)</label>
+    {% if current_data %}
+    <input type="text" class="form-control" id="vehicle_type" name="vehicle_type" value="{{current_data.vehicle_type}}">
+    {% else %}
+    <input type="text" class="form-control" id="vehicle_type" name="vehicle_type" value="{{request_info.vehicle_type}}">
+    {% endif %}
+    </div>
+    <div class="mb-3">
+        <label for="special_request" class="form-label">special_request (Optional)</label>
+        {% if current_data %}
+        <input type="text" class="form-control" id="special_request" name="special_request" value="{{current_data.special_request}}">
+        {% else %}
+        <input type="text" class="form-control" id="special_request" name="special_request" value="{{request_info.special_request}}">
+        {% endif %}
+    </div>
+    <button type="submit" name="confirm" value="{{request_info.id}}" class="btn btn-primary">Save Edits</button>
+    <button type="submit" name="request_id" value="{{request_info.id}}" class="btn btn-outline-secondary">Cancle Edits</button>
+  </form>
+</div>
+<div class="p-2">
+  <form action="{% url 'ride_sharing:my_requests'%}" method="post">
+    {% csrf_token %}
+    <button type="submit" name="cancel_ride" value="{{request_info.id}}" class="btn btn-danger">Cancle Ride</button>
+  </form>
+</div>
+{% endblock content %}

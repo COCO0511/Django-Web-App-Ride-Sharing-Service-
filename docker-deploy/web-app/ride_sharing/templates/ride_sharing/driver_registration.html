@@ -1,0 +1,30 @@
+{% extends "base.html"%}
+{% block content %}
+<div class="mb-3">
+    <legend> Register to be a driver </legend>
+</div>
+<form action="{% url 'ride_sharing:driver_registration_result'%}" method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="your_name" class="form-label">Full Name</label>
+      <input type="text" class="form-control" id="your_name" name="your_name" required>
+    </div>
+    <div class="mb-3">
+      <label for="vehicle_type" class="form-label">Your Vehicle Type</label>
+      <input type="text" class="form-control" id="vehicle_type" name="vehicle_type" required>
+    </div>
+    <div class="mb-3">
+        <label for="license_plate_num" class="form-label">Your License Plate Number</label>
+        <input type="text" class="form-control" id="license_plate_num" name="license_plate_num" required>
+    </div>
+    <div class="mb-3">
+    <label for="max_passenger_num" class="form-label">Max Passenger Number</label>
+    <input type="text" class="form-control" id="max_passenger_num" name="max_passenger_num" required>
+    </div>
+    <div class="mb-3">
+        <label for="special_vehicle_info" class="form-label">Special Vehicle Information</label>
+        <input type="text" class="form-control" id="special_vehicle_info" name="special_vehicle_info">
+    </div>
+    <button type="submit" value="OK" class="btn btn-primary">Register Me</button>
+  </form>
+{% endblock content %}

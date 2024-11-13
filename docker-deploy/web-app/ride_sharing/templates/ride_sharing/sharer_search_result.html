@@ -1,0 +1,37 @@
+{% extends "base.html"%}
+{% block content %}
+{% if my_request_list %}
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Destnation</th>
+        <th scope="col">Arrival Time</th>
+        <th scope="col">Number of Passengers</th>
+        <th scope="col">vehicle_type</th>
+        <th scope="col">special_request</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for request in my_request_list %}
+        <tr>
+            <td>{{ request.destination }}</td>
+            <td>{{ request.expected_arrival_time }}</td>
+            <td>{{ request.num_passengers }}</td>
+            <td>{{ request.vehicle_type }}</td>
+            <td>{{ request.special_request }}</td>
+            <form action="{% url 'ride_sharing:my_requests'%}" method="post">
+              {% csrf_token %}              
+                  <td>
+                    <input type="hidden" name="num_sharer", value="{{num_sharer}}"></input>
+                    <button type="submit" name="request_id_sharer_join", value="{{request.id}}", class="btn btn-primary">join this ride</button>
+                  </td>
+            </form>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+    <p>No requests are available.</p>
+{% endif %}
+{% endblock content %}

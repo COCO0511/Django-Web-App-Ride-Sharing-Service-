@@ -1,0 +1,81 @@
+{% extends "base.html"%}
+{% block content %}
+{% if my_request_list %}
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Your Roal</th>
+        <th scope="col">Destnation</th>
+        <th scope="col">Arrival Time</th>
+        <th scope="col">Number of Passengers</th>
+        <th scope="col">Share Status</th>
+        <th scope="col">Status</th>
+        <th scope="col">Ride Details</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for request in my_request_list %}
+        <tr>
+            {% if request.owner == cur_user.id%}
+              <td>Owner</td>
+            {% else %}
+              <td>Sharer</td>
+            {% endif %}
+            <td>{{ request.destination }}</td>
+            <td>{{ request.expected_arrival_time }}</td>
+            <td>{{ request.num_passengers }}</td>
+            {% if not request.can_share %}
+              <td>
+                <button type="button" class="btn btn-light btn-sm" style="pointer-events: none;">non-share</button>
+              </td>
+            {% elif request.total_sharer %}
+              <td>
+                <button type="button" class="btn btn-danger btn-sm" style="pointer-events: none;">shared</button>
+              </td>
+            {% else %}
+              <td>
+                <button type="button" class="btn btn-warning btn-sm" style="pointer-events: none;">sharable</button>
+              </td>
+            {% endif %}
+            {% if request.is_open %}
+              <td>
+                <button type="button" class="btn btn-light btn-sm" style="pointer-events: none;">open</button>
+              </td>
+            {% elif request.is_complete  == False %}
+              <td><button type="button" class="btn btn-success btn-sm" style="pointer-events: none;">confirmed</button></td>
+            {% else %}
+            <td>completed</a></td>
+            {% endif %}
+            
+            <form action="{% url 'ride_sharing:view_request_detail'%}" method="post">
+              {% csrf_token %}
+            <td>
+              <button type="submit" name="request_id", value="{{request.id}}", class="btn btn-link">see more</button>
+            </td>
+            </form>
+            
+            {% if request.is_open and request.owner == cur_user.id%}
+              <form action="{% url 'ride_sharing:edit_request_detail_owner'%}" method="post">
+                {% csrf_token %}
+                <td>
+                  <button type="submit" name="request_id", value="{{request.id}}", class="btn btn-primary">Edit Ride</button>
+                </td>
+              </form>
+            {% elif request.is_open and request.owner != cur_user.id%}
+              <form action="{% url 'ride_sharing:edit_request_detail_sharer'%}" method="post">
+                {% csrf_token %}
+                <td>
+                  <button type="submit" name="request_id", value="{{request.id}}", class="btn btn-primary btn-sm">Edit Share Ride</button>
+                </td>
+              </form>
+            {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+    <h2>You don't have any open/confirmed requests at the moment.</h2>
+    <p>You can add new requests by booking a new ride or share an existing ride.</p>
+{% endif %}
+{% endblock content %}

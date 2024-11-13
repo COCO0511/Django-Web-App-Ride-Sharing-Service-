@@ -1,0 +1,33 @@
+{% extends "base.html"%}
+{% block content %}
+{% if driver_info %}
+<h1>My Profile</h1>
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">name</th>
+        <th scope="col">vehicle_type</th>
+        <th scope="col">license_plate_num</th>
+        <th scope="col">max_passenger_num</th>
+        <th scope="col">special_vehicle_info</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ driver_info.name }}</td>
+            <td>{{ driver_info.vehicle_type }}</td>
+            <td>{{ driver_info.license_plate_num }}</td>
+            <td>{{ driver_info.max_passenger_num }}</td>
+            <td>{{ driver_info.special_vehicle_info }}</td>
+            <form action="{% url 'ride_sharing:edit_driver_profile'%}" method="post">
+              {% csrf_token %}
+              <td><button type="submit" name="driver", value="{{driver_info.user}}", class="btn btn-primary btn-sm">Edit My Profile</button></td>
+            </form>
+        </tr>
+    </tbody>
+  </table>
+{% else %}
+    <p>You are not a driver yet.</p>
+{% endif %}
+{% endblock content %}

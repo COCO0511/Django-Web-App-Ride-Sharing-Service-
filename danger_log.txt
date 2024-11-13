@@ -1,0 +1,39 @@
+Potential danger and current mitigation:
+- User input is incomplete, leaving critical information in the database empty
+    - Required info is implemented as required fields in the input form to make sure user fill them in
+- User input is not reasonable (eg number of passenger being negative or too big, lastest arrival time earlier than earlist arrival time)
+    - Revelant checks were implemented to make sure user inputs are reasonable.
+    - If an input field is unreasonable, the data will not be processed and an error message will pop up on screen to let the user know how to fix the problem.
+- User register to be a driver more than once
+    - This will cause problem with the database as a single user will have more than one record in the Driver model
+    - The system will check whether a Driver record for the user has already exist. If so it will not add a new record but inform the user that she is already a driver.    
+- User try to register with an existing username
+    - This will cause problem with the database as a username is supposed to be unique
+    - The built in User module of Django takes care of checking for duplicate in username during registration
+- The same sharer try to share a certain ride multiple times
+    - This would cause trouble since it will create multiple records who shares the same booking and the same sharer in the ShareRide table
+    - We put in checks to see if the sharer has already shared the selected ride. 
+    - If so we will remind the user that they have already shared this ride, and if they want to change the number of rider if their group they should do it via edit shared ride function.
+- Driver try to take their own booking
+    - This opens up opportunities for driver to fraud the system. Therefore the open rides made by the driver are filtered out in their open request search result.
+    - However, if the driver is a sharer instead of the owner of certain ride, they will be able to claim that ride, as this is considered to be a reasonable behaviour. (driver is going to the destination and is willing to take someone with them)
+- Edit ride feature could allow shared ride to have too many passengers
+    - This could make it impossible for any driver to take the ride, thus influencing the other user who are sharing the ride with the user who made the edits.
+    - This could become a security vulnerability because a melicious user can use this to attack the system and disable lots of qualifying rides. 
+    - Even though we do check for input validility, this loophole is not handled very well at the moment and it's important to fix this issue in future enhancement.
+- No limit in terms of how many rides a user can make in a short amount of time
+    - This could be dangerous because a malicious user could try to send a large amount of requests constantly, thus keeping the server busy and blocking the other users from accessing the service. 
+- Multiple sharers try to join the same shared ride at the same time
+    - Since there is a small time gap between sharer search for a share ride and deciding to join the share ride, multiple users could try to join the same ride after seeing the search result, leading to too many riders in total.
+- Multiple drivers try to claim certain ride at the same time
+    - As currently we don't implement the mechanism to only allow one driver to sign up for a ride, if more than one driver try to claim the same ride, this could cause the data to be overwritten.
+- Privacy/security concern for showing username for driver/sharer
+    - For the driver/sharer on the same ride, we should their username to each other directly. It might be better to allow the user to set a public facing name instead of the username that's used for their account authentication.
+- User Verification
+    - The current system doesn't require user to verify their email or verify their an actual human. 
+    - This is a loophole that could allow malicous users to sign up for a large amount of fake/robot account and flood the system with fake requests.
+    - It would be better if we require the user to do some form of verification.
+- Scalability
+    - The system might not be able to handle large amount of concurrent requests well.
+- Not asynchronous
+    - Right now if a failure happens when user were sending the request, asynchrnous features are not implemented well to ensure that the request is received at lease/at most once

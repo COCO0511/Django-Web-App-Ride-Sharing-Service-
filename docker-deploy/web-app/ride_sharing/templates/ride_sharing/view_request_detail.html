@@ -1,0 +1,129 @@
+{% extends "base.html"%}
+{% block content %}
+{% if request %}
+<div>
+  <h3>Request Details</h3>
+</div>
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Ride Owner</th>
+        <th scope="col">Destnation</th>
+        <th scope="col">Arrival Time</th>
+        <th scope="col">Number of Passengers</th>
+        <th scope="col">Sharable with others</th>
+        <th scope="col">vehicle_type</th>
+        <th scope="col">special_request</th>
+        <th scope="col">Status</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ request.owner }}</td>
+            <td>{{ request.destination }}</td>
+            <td>{{ request.expected_arrival_time }}</td>
+            <td>{{ request.num_passengers }}</td>
+            <td>{{ request.can_share }}</td>
+            <td>{{ request.vehicle_type }}</td>
+            <td>{{ request.special_request }}</td>
+            {% if request.is_open %}
+                <td>open</td>
+            {% elif request.is_complete  == False %}
+                <td>confirmed</td>
+            {% else %}
+            <td>completed</td>
+            {% endif %}
+        </tr>
+    </tbody>
+  </table>
+  {% if request.can_share == True %}
+    <div>
+      <h3>Sharer Info</h3>
+    </div>
+    {% if request.shareride_set.all %}
+      <div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Sharer</th>
+              <th scope="col">Number of Sharer</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for shareride in request.shareride_set.all %}
+              <tr>
+                    <td>{{ shareride.sharer }}</td>  
+                    <td>{{ shareride.num_sharer }}</td>
+              </tr>
+              {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <td>No sharer has joined your request yet</td> 
+    {% endif %}
+  {% endif %}
+  {% if request.is_open == False %}
+    <div>
+      <h3>Driver Info</h3>
+    </div>
+      <div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>name</th>
+              <th>vehicle_type</th>
+              <th>license_plate_num</th>
+              <th>special_vehicle_info</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr>
+                    <td>{{ request.driver.name }}</td>  
+                    <td>{{ request.driver.vehicle_type }}</td>
+                    <td>{{ request.driver.license_plate_num }}</td>
+                    <td>{{ request.driver.special_vehicle_info }}</td>
+              </tr>
+          </tbody>
+        </table>
+      </div>
+  {% endif %}
+{% else %}
+    <p>No requests are available.</p>
+{% endif %}
+
+{% if request.is_open and request.owner.id == cur_user.id%}
+<div class="p-2">
+  <form action="{% url 'ride_sharing:edit_request_detail_owner'%}" method="post">
+    {% csrf_token %}
+      <button type="submit" name="request_id", value="{{request.id}}", class="btn btn-primary">Edit Ride</button>
+  </form>
+</div>
+<div class="p-2">
+  <form action="{% url 'ride_sharing:my_requests'%}" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <button type="submit" name="cancel_ride" value="{{request.id}}" class="btn btn-danger">Cancle Ride</button>
+    </div>
+  </form>
+</div>
+{% endif %}
+{% for share in request.shareride_set.all %}
+  {% if request.is_open and request.owner.id != cur_user.id and cur_user.id == share.sharer.id%}
+  <div class="p-2">
+    <form action="{% url 'ride_sharing:edit_request_detail_sharer'%}" method="post">
+      {% csrf_token %}
+        <button type="submit" name="request_id", value="{{request.id}}", class="btn btn-primary">Edit Share Ride</button>
+    </form>
+  </div>
+  <div class="p-2">
+    <form action="{% url 'ride_sharing:my_requests'%}" method="post">
+      {% csrf_token %}
+      <button type="submit" name="cancel_ride_sharer" value="{{request.id}}" class="btn btn-danger">Cancle Share Ride</button>
+    </form>
+  </div>
+  {% endif %}
+{% endfor %}
+
+{% endblock content %}

@@ -1,0 +1,58 @@
+{% extends "base.html"%}
+{% block content %}
+{% if my_request_list %}
+<h3>Open Rides</h3>
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col"></th>
+        <th scope="col">Destnation</th>
+        <th scope="col">Expected Arrival Time</th>
+        <th scope="col">Number of Passengers</th>
+        <th scope="col">Number of Sharers</th>
+        <th scope="col">Total Riders</th>
+        <th scope="col">Ride Detail</th>
+        <th scope="col">Claim this Ride</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for request in my_request_list %}
+        <tr>
+            {% if request.total_sharer %}
+              <td><button class="btn btn-danger btn-sm" style="pointer-events: none;">Shared Ride</button></td>
+            {% else %}
+              <td></td>
+            {% endif %}
+            <td>{{ request.destination }}</td>
+            <td>{{ request.expected_arrival_time }}</td>
+            <td>{{ request.num_passengers }}</td>
+            {% if request.total_sharer %}
+              <td>{{ request.total_sharer }}</td>
+            {% else %}
+              <td>0</td>
+            {% endif %}
+            {% if request.total_sharer %}
+              <td>{{ request.total_pax }}</td>
+            {% else %}
+              <td>{{ request.num_passengers }}</td>
+            {% endif %}
+            <form action="{% url 'ride_sharing:view_request_detail'%}" method="post">
+              {% csrf_token %}
+                <td>
+                  <button type="submit" name="request_id", value="{{request.id}}", class="btn btn-link">see more</button>
+                </td>
+            </form>
+            <form action="{% url 'ride_sharing:driver_view_confirmed_requests'%}" method="post">
+              {% csrf_token %}
+                <td>
+                  <button type="submit" name="request_id", value="{{request.id}}", class="btn btn-primary">Claim it</button>
+                </td>
+            </form>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+    <p>No requests are available.</p>
+{% endif %}
+{% endblock content %}

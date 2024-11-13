@@ -1,0 +1,41 @@
+{% extends "base.html"%}
+{% block content %}
+<div class="mb-3">
+    <legend> Place a Ride Request </legend>
+</div>
+<form action="{% url 'ride_sharing:my_requests'%}" method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="destination" class="form-label">Destination Address</label>
+      <input type="text" class="form-control" id="destination" name="destination" required value="{{current_data.destination}}">
+    </div>
+    <div class="mb-3">
+      <label for="expected_arrival_time" class="form-label">expected_arrival_time</label>
+      <input type="datetime-local" class="form-control" id="expected_arrival_time" name="expected_arrival_time" required value="{{current_data.expected_arrival_time}}">
+    </div>
+    <div class="mb-3">
+        <label for="num_passengers" class="form-label">num_passengers</label>
+        <input type="number" class="form-control" id="num_passengers" name="num_passengers" required value="{{current_data.num_passengers}}">
+    </div>
+    {% if current_data.can_share == "on"%}
+      <div class="mb-3">
+          <input type="checkbox" id="can_share" name="can_share" checked>
+          <label for="can_share" class="form-label"> I'm open to having other passengers join me on this ride</label>
+      </div>
+    {% else %}
+      <div class="mb-3">
+        <input type="checkbox" id="can_share" name="can_share">
+        <label for="can_share" class="form-label"> I'm open to having other passengers join me on this ride</label>
+      </div>
+    {% endif %}
+    <div class="mb-3">
+    <label for="vehicle_type" class="form-label">vehicle_type (Optional)</label>
+    <input type="text" class="form-control" id="vehicle_type" name="vehicle_type" value="{{current_data.vehicle_type}}">
+    </div>
+    <div class="mb-3">
+        <label for="special_request" class="form-label">special_request (Optional)</label>
+        <input type="text" class="form-control" id="special_request" name="special_request" value="{{current_data.special_request}}">
+    </div>
+    <button type="submit" value="OK" class="btn btn-primary">Place My Request</button>
+  </form>
+{% endblock content %}
